@@ -1,0 +1,221 @@
+body {
+    margin: 0;
+}
+
+/*
+Como el selector de clase top.bar solo se está aplicando a un elemento del
+documento HTML, no sería necesario referenciar el elemento sobre el que se 
+define (div). Los estilos se aplicarían de igual forma con:
+
+.top-bar {}
+
+*/
+div.top-bar {
+    background: #333;
+}
+
+/* Comentado al final del documento */
+@media screen and (min-width: 768px) {
+    /* No es necesario referenciar el elemento div, puesto que no se repite el iidentificador
+       de la clase en el documento */
+    div.top-bar {
+        display: none;
+    }
+}
+
+/*
+Es recomendable utilizar el selector de Clase del elemento para 
+definir los estilos antes que el selector Id (#) por diversos motivos, 
+entre ellos, porque el selector de Clase puede utilizarse en más de 
+un elemento, ya que puede repetirse, mientras que el Id, no. Entonces,
+lo más razonable sería definir los estilos sobre:
+
+.icon-menu {}
+
+*/
+#icon-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    padding-left: 1em;
+}
+
+/*
+Aquí, comentar varias cosas... Como se ha mencionado anteriormente, no es 
+recomendable utilizar el selector Id para definir los estilos. Además,
+en este caso, no es necesario hacer referencia a la etiqueta div, ni anidar
+selectores, puesto que únicamente existe en el documento HTML un elemento
+con la referencia al identificador de clase 'icon-bar'; bastaría con definir
+lo siguiente para referenciar el elemento que queremos afectar con los estilos:
+
+.icon-bar {}
+
+*/
+div#icon-menu .icon-bar {
+    background: #fff;
+    width: 30px;
+    height: 4px;
+    border-radius: 2px;
+    position: relative;
+}
+
+/*
+En este punto es aplicable lo mencionado en el párrafo anterior. Así, esto
+sería igualmente funcional:
+
+.icon-bar::after{}
+
+.icon-bar::before{}
+
+Otro punto a destacar es que, aunque resulta igualmente funcional, lo correcto
+(en base a la especificación CSS3) es el utilizar dos puntos dobles (::), en vez de uno 
+solo (:), para referenciar los pseudo-elementos. Esto, parece ser que nace de un 
+intento para distinguir pseudo-elementos de pseudo-clases.
+
+*/
+div#icon-menu .icon-bar:after,
+div#icon-menu .icon-bar:before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 30px;
+    height: 4px;
+    border-radius: 2px;
+    background: #fff;
+    top: -0.5em;
+}
+
+/*
+Siguiendo lo anteriormente dicho, lo de debajo debería de sustituirse por esto otro:
+
+.icon-bar::after{}
+
+*/
+div#icon-menu .icon-bar:after {
+    top: 0.5em;
+}
+
+/*
+Aquí, más de lo mismo... No es necesario apuntar al elemento ul. Con hacer referencia al
+selector de clase, es suficiente:
+
+.menu{}
+
+*/
+ul.menu {
+    background: #333;
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    list-style: none;
+    position: relative;
+    left: -100%;
+    transition: all 0.3s;
+}
+
+/*
+Aquí, también está de más el indicar los tags HML (ul y li). El referenciar el selector de 
+clase aporta la misma funcionalidad:
+
+.link {}
+
+Aunque, OJO!, si hacemos esto, cambiaría la especificidad del estilo y, entonces, si se 
+aplicaría (por la regla de cascada) el último estilo definido en el presente documento.
+Es decir, los enlaces se verían de color rojo.
+*/
+ul li .link {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Comentado al final del documento */
+@media screen and (min-width: 768px) {
+    nav ul.menu {
+        display: flex;
+        justify-content: space-evenly;
+        left: 0;
+    }
+}
+
+ul.show {
+    left: 0;
+}
+
+/*
+Esto último, tal vez quedaría mejor especificado de la siguiente forma:
+
+.menu li {}
+
+Sobre todo, pensando de cara al futuro, donde los estilos aplicados a otras listas
+desordenadas podrían crear conflictos con la actual.
+
+Aunque, también funcionaría apuntando solo a la etiqueta 'li' (li {}), puesto que en 
+el documento HTML solo existen un grupo de las mismas, y son justamente las que queremos
+afectar. Pero, como digo, si se define la etiqueta 'ul', se aumenta la concreción a los 
+elementos afectados por los estilos y, esto, en el futuro puede resultar ventajoso.
+*/
+ul li {
+    padding: 1em;
+    border-bottom: 1px solid #fff;
+}
+
+/* Comentado al final del documento */
+@media screen and (min-width: 768px) {
+    /*
+    Lo que comento a continuación tiene relación con lo citado en el punto anterior. Con indicar li {}, 
+    sería suficiente. Pero, también funcionaría .menu li {}. Con todo, lo menos recomendable sería aplicar los
+    identificadores de etiqueta, existiendo identificadores de clase dentro de alguno de los elementos.
+    Además, sabiendo que los identificadores de Clase tienen mayor valor de especificidad que las etiquetas.
+
+    .menu li {}
+
+    .menu li:hover {}
+
+    .menu li:hover a {}
+
+    */
+    ul li {
+        border-bottom: none;
+        text-transform: uppercase;
+    }
+
+    ul li:hover {
+        background: grey;
+    }
+
+    ul li:hover a {
+        color: #000;
+    }
+}
+
+/*  POR QUÉ NO SE APLICA ESTA CLASE 
+
+ El estilo definido en esta clase no se aplica debido a la especificidad dada al selector del elemento HTML, en
+ este caso el elemento <a>. Y todo, porque en este caso existe menor especificidad que en el selector anterior
+ ('ul li .link'), el cuál si se está aplicando.
+
+ Así, las especificidades serían las siguientes:
+
+ 'ul li .link'  especificidad = 0, 0, 0, 3  >>  Este se aplica por su mayor especificidad
+
+ '.link'        especificidad = 0, 0, 0, 1  >>  Este no se aplica, a no ser que se aumente su especificidad con la declaración !important
+
+ Y, por otra parte, claro está que la cascada no afecta aquí debido a que existen definidas reglas de especificidad, las cuáles quedan
+ por encima de estas a nivel de jerarquía.
+
+*/
+.link {
+    color: red;
+}
+
+/* REFERENCIA A MEDIA QUERIES */
+/*
+No es necesario tener tres referencias a una Media Querie que apunta a un mismo tipo de medio y 
+tamaño de pantalla. Lo más recomendable sería unificarlo todo en una única Media Querie al final
+del documento CSS. Queda mucho más legible y ordenado y, además, permite tener todos los estilos 
+de la misma Media Querie unifidados, lo que ayuda a una mejor lectura y comprensión de la misma.
+*/
